@@ -9359,6 +9359,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828996468}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &830280492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 830280493}
+  m_Layer: 0
+  m_Name: SinglePlayerSessionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &830280493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830280492}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 132.73262, y: -86.36775, z: 381.2148}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &831471537
 GameObject:
   m_ObjectHideFlags: 0
@@ -17407,7 +17438,7 @@ GameObject:
   - component: {fileID: 1565488218}
   - component: {fileID: 1565488217}
   m_Layer: 0
-  m_Name: GameCoreManager
+  m_Name: SinglePlayerCoreGameplayManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24397,6 +24428,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MissileDummy
       objectReference: {fileID: 0}
+    - target: {fileID: 6118355062282490779, guid: 6bb861a904c8a974ca0567731f2b5a36, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7803654306715174223, guid: 6bb861a904c8a974ca0567731f2b5a36, type: 3}
       propertyPath: target
       value: 
@@ -24585,3 +24620,4 @@ SceneRoots:
   - {fileID: 1355669519}
   - {fileID: 1859889480}
   - {fileID: 696024101979182909}
+  - {fileID: 830280493}
