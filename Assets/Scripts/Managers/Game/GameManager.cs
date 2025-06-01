@@ -7,6 +7,13 @@ public class GameManager : GameBase
 {
     public new static GameManager Instance => (GameManager)GameBase.Instance;
 
+    [SerializeField] private Transform gameContainer;
+
+    [SerializeField] private PlayerController scenePlayer;
+    [SerializeField] private SessionManagerBase sessionManagerPrefab;
+
+    public SessionManagerBase CurrentSessionManager { get; private set; }
+
     //[Header("Configs")]
     ////public LevelsConfig levels;
 
@@ -104,6 +111,26 @@ public class GameManager : GameBase
         return tcs;
     }
 
+
+    public void StartSinglPlayerSession()
+    {
+        if (CurrentSessionManager != null)
+        {
+            Debug.LogWarning("Session already started!");
+            return;
+        }
+        
+        var sessionManager = Instantiate(sessionManagerPrefab, gameContainer);
+        sessionManager.SetModel(new SessionModel
+        {
+            Player = scenePlayer,
+            CurrentState = SessionModel.SessionState.Waiting
+        });
+        
+        CurrentSessionManager = sessionManager;
+
+
+    }
 
     protected async override void OnSessionStart()
     {

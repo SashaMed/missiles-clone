@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class SinglePlayerSessionManager : SessionManagerBase
 {
+
+    private GameScreen gameScreen;
+
     public override void EndSession()
     {
-        throw new System.NotImplementedException();
+
+        SimpleNavigation.Instance.Push<GameOverScreen, GameOverScreenModel>(new GameOverScreenModel
+        {
+            SessionManager = this
+        });
     }
 
     public override void EndSessionToMenu()
@@ -16,12 +23,20 @@ public class SinglePlayerSessionManager : SessionManagerBase
 
     public override void RestartSession()
     {
-        Refresh();
+        BasicLayer.Instance.FadeWithAction(() =>
+        {
+            Refresh();
+        },
+        duration: 1);
     }
 
     public override void StartSession()
     {
-        throw new System.NotImplementedException();
+        gameScreen = SimpleNavigation.Instance.Push<GameScreen, GameScreenModel>(new GameScreenModel
+        {
+            SessionManager = this
+        });
+
     }
 
 

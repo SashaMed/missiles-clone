@@ -79,15 +79,16 @@ public class BasicLayer : CoreBasicLayer
         //}
     }
 
-    private void FadeWithAction(Action doThis, bool waitScreenLoaded = false)
+    public void FadeWithAction(Action doThis, float duration = -1, bool waitScreenLoaded = false)
     {
+        duration = duration < 0 ? _Dur : duration;
         if (_fader && doThis != null)
         {
 
             _fader.DOKill(false);
             _fader.gameObject.SetActive(true);
             var seq = DOTween.Sequence(_fader).SetUpdate(true)
-                .Append(_fader.DOFade(1, _Dur).ChangeStartValue(0))
+                .Append(_fader.DOFade(1, duration).ChangeStartValue(0))
                 .AppendCallback(doThis.Invoke);
 
             if (waitScreenLoaded)
@@ -96,7 +97,7 @@ public class BasicLayer : CoreBasicLayer
             }
             else
             {
-                seq.Append(_fader.DOFade(0, _Dur))
+                seq.Append(_fader.DOFade(0, duration))
                     .OnComplete(() => _fader.gameObject.SetActive(false));
             }
         }

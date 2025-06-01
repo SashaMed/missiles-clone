@@ -9,6 +9,6 @@ public class MainMenuScreen : BasicScreen<EmptyModel>
 
     public void OnPlayClick()
     {
-
+        GameManager.Instance.StartSinglPlayerSession();
     }
 }
