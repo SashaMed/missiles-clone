@@ -4,7 +4,9 @@ using UnityEngine;
 
 public abstract class CoreGameplayManagerBase : Entity<GameCoreModel>
 {
+    [SerializeField] private Transform _contentHolder;
 
+    public Transform ContentHolder => _contentHolder;
     protected abstract void StartCoreLoop();
 
     public abstract void OnPLayerDeath(PlayerController player);

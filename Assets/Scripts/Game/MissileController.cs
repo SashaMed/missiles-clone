@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ public class MissileController : MonoBehaviour
 
     [Space]
     [SerializeField] float afterHitTrailWorkingTime = 0.1f;
+
+    public Action OnTimeToLiveReachZeroAction;
 
     private float lifeTimer;
 
@@ -137,6 +140,7 @@ public class MissileController : MonoBehaviour
 
     private void OnTimeToLiveReachZero()
     {
+        OnTimeToLiveReachZeroAction?.Invoke();
         var rb = missileModel.GetComponent<Rigidbody>();
         if (rb != null)
         {

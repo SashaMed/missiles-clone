@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4079104252822226779
+--- !u!1 &7619660310856662653
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 167503698373389875}
-  - component: {fileID: 1116319620181611436}
+  - component: {fileID: 6911796314119710744}
+  - component: {fileID: 294080192924216713}
   m_Layer: 0
-  m_Name: SinglePlayerSessionManager
+  m_Name: MissileThreat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &167503698373389875
+--- !u!4 &6911796314119710744
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4079104252822226779}
+  m_GameObject: {fileID: 7619660310856662653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,16 +32,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1116319620181611436
+--- !u!114 &294080192924216713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4079104252822226779}
+  m_GameObject: {fileID: 7619660310856662653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a1cc5eee34484d4bbcaf68d018459d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 25215a051562ecb4eb0952076d7b35af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _coreGO: {fileID: 4178548385275421896, guid: 2468d1f6bf6f40d40b5a9c2119720de7, type: 3}
+  missilePrefab: {fileID: 7803654306715174223, guid: 6bb861a904c8a974ca0567731f2b5a36, type: 3}
+  distanceToPlayer: 250
