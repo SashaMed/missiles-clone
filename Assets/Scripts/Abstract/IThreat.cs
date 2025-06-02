@@ -6,5 +6,8 @@ using UnityEngine;
 public interface IThreat 
 {
     void StartThreat(CoreGameplayManagerBase coreManager);
-    event Action<IThreat> OnEnded;
+
+    void EarlyThreatDisable(CoreGameplayManagerBase coreManager);
+
+    event Action<IThreat> OnThreatEnded;
 }

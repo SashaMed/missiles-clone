@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class MissileController : MonoBehaviour
+public class MissileController : MonoBehaviour, IThreat
 {
     [SerializeField] Transform target;
    
@@ -12,6 +12,9 @@ public class MissileController : MonoBehaviour
 
     [Header("Missile Settings")]
     [SerializeField] float lifetime = 5f;
+
+    [Space]
+    [SerializeField] float spawnDistanceToPlayer = 200;
 
     [Space]
     [SerializeField] private ParticleSystem trailParticles;
@@ -31,16 +34,29 @@ public class MissileController : MonoBehaviour
     private bool isActive = true;
     private float originalEmissionRateOverTime;
 
+    public event Action<IThreat> OnThreatEnded;
 
-    private void Awake()
+    public void StartThreat(CoreGameplayManagerBase coreManager)
     {
-        core = GetComponentInChildren<Core>();
-        trailParticles = GetComponentInChildren<ParticleSystem>();
+        var player = coreManager.Model.Player.transform;
+
+        var dir2D = UnityEngine.Random.insideUnitCircle.normalized;
+        var offset = new Vector3(dir2D.x, 0, dir2D.y) * spawnDistanceToPlayer;
+        var spawnPos = player.position + offset;
+
+
+        var toPlayer = player.position - spawnPos;
+        toPlayer.y = player.position.y;
+
+        var yawOnly = Quaternion.LookRotation(toPlayer);
+        transform.position = spawnPos;
+        transform.rotation = yawOnly;
+        SetTarget(player.transform);
     }
 
-    void OnEnable()
+    public void EarlyThreatDisable(CoreGameplayManagerBase coreManager)
     {
-        lifeTimer = 0f;
+        Destroy(gameObject);
     }
 
     public void SetTarget(Transform newTarget)
@@ -50,6 +66,10 @@ public class MissileController : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
+        if (!isActive)
+        {
+            return;
+        }
         var damageable = other.GetComponent<IDamageable>();
         if (damageable == null)
         {
@@ -57,25 +77,44 @@ public class MissileController : MonoBehaviour
         }
         if (damageable.Damage(100, transform.name))
         {
+            Debug.Log($"Missile {transform.name} hit {other.transform.parent.parent.name} and dealt damage.");
             OnMissileHits();
         }
+    }
+
+    private void Awake()
+    {
+        core = GetComponentInChildren<Core>();
+        trailParticles = GetComponentInChildren<ParticleSystem>();
     }
 
     private void Start()
     {
         isActive = true;
+        lifeTimer = 0f;
+        core.Stats.onHealthZero += OnMissileDeath;
         core.Movement.Init(transform, forwardSpeed, turnSpeed);
     }
 
-    void Update()
+    private void Update()
     {
+        core.LogicUpdate();
         if (!isActive)
         {
             return;
         }
 
         SetMovementInput();
-        core.LogicUpdate();
+        CheckLifetime();
+    }
+
+    private void OnDisable()
+    {
+        core.Stats.onHealthZero -= OnMissileDeath;
+    }
+
+    private void CheckLifetime()
+    {
         lifeTimer += Time.deltaTime;
         if (lifeTimer >= lifetime)
             OnTimeToLiveReachZero();
@@ -95,11 +134,24 @@ public class MissileController : MonoBehaviour
         }
     }
 
+    private void OnMissileDeath(GameObject core)
+    {
+        Debug.Log($"Missile {transform.name} was hit.");
+        OnMissileHits();
+    }
+
     private void OnMissileHits()
     {
-        DisableTrail();
-        isActive = false;
+        DisableMissile();
         missileModel.SetActive(false);
+    }
+
+    private void DisableMissile()
+    {
+        OnThreatEnded?.Invoke(this);
+        DisableTrail();
+        core.gameObject.SetActive(false);
+        isActive = false;
     }
 
     private void DisableTrail()
@@ -140,21 +192,26 @@ public class MissileController : MonoBehaviour
 
     private void OnTimeToLiveReachZero()
     {
-        OnTimeToLiveReachZeroAction?.Invoke();
+        DropMissile();
+        DisableMissile();
+    }
+
+
+    private void DropMissile()
+    {
         var rb = missileModel.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (rb == null)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
-
-            float power = 100;
-            float rotatePower = 1f; 
-            float randomizeDirection = 1f;
-
-            rb.velocity = (missileModel.transform.forward + UnityEngine.Random.insideUnitSphere * 0.5f * randomizeDirection) * power;
-            rb.AddTorque(UnityEngine.Random.onUnitSphere * 5 * rotatePower);
+            return;
         }
-        isActive = false;
-        DisableTrail();
+        rb.isKinematic = false;
+        rb.useGravity = true;
+
+        float power = 100;
+        float rotatePower = 1f;
+        float randomizeDirection = 1f;
+
+        rb.velocity = (missileModel.transform.forward + UnityEngine.Random.insideUnitSphere * 0.5f * randomizeDirection) * power;
+        rb.AddTorque(UnityEngine.Random.onUnitSphere * 5 * rotatePower);
     }
 }

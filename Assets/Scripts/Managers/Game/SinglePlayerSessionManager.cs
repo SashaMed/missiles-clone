@@ -9,7 +9,7 @@ public class SinglePlayerSessionManager : SessionManagerBase
 
     public override void EndSession()
     {
-
+        Model.CurrentState = SessionModel.SessionState.GameOver;
         SimpleNavigation.Instance.Push<GameOverScreen, GameOverScreenModel>(new GameOverScreenModel
         {
             SessionManager = this

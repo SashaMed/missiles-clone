@@ -8,7 +8,9 @@ public class GameManager : GameBase
     public new static GameManager Instance => (GameManager)GameBase.Instance;
 
     [SerializeField] private Transform gameContainer;
+    [SerializeField] private Transform managersContainer;
 
+    [Space]
     [SerializeField] private PlayerController scenePlayer;
     [SerializeField] private SessionManagerBase sessionManagerPrefab;
 
@@ -120,11 +122,13 @@ public class GameManager : GameBase
             return;
         }
         
-        var sessionManager = Instantiate(sessionManagerPrefab, gameContainer);
+        var sessionManager = Instantiate(sessionManagerPrefab, managersContainer);
         sessionManager.SetModel(new SessionModel
         {
             Player = scenePlayer,
-            CurrentState = SessionModel.SessionState.Waiting
+            CurrentState = SessionModel.SessionState.Waiting,
+            GameContentHolder = gameContainer,
+            ManagersContentHolder = managersContainer
         });
         
         CurrentSessionManager = sessionManager;

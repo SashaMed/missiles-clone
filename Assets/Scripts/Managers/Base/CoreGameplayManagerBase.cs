@@ -25,7 +25,10 @@ public abstract class CoreGameplayManagerBase : Entity<GameCoreModel>
 
 public class GameCoreModel
 {
-    
+    public Transform GameContentHolder;
+
+    public Transform ManagersContentHolder;
+
     public PlayerController Player { get; set; }
     public SessionManagerBase SessionManager { get; set; }
 }

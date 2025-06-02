@@ -7,7 +7,9 @@ public class CoreLoopConfig : ScriptableObject
 {
     public AnimationCurve budgetCurve;
 
-    public float iterationDelay;
+    public float minIterationDelay;
+    public float maxIterationDelay;
+
     public int maxActive = 60;
 
     public List<ThreatEntry> threats;

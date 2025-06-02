@@ -5,24 +5,22 @@ using UnityEngine;
 
 public abstract class SessionManagerBase : Entity<SessionModel>
 {
+    public bool IsActive => Model.CurrentState != SessionModel.SessionState.GameOver;
+
     [SerializeField] private GameObject _coreGO;
     protected CoreGameplayManagerBase CoreManager { get; private set; }
 
-    public override void InitialPrepare()
-    {
-        base.InitialPrepare();
-        CreateCore();
-    }
-
     private void CreateCore()
     {
-        var coreGO = Instantiate(_coreGO, transform);
+        if (CoreManager != null) return; // Prevent multiple instantiations of the core manager
+        var coreGO = Instantiate(_coreGO, Model.ManagersContentHolder);
         CoreManager = coreGO.GetComponent<CoreGameplayManagerBase>();
     }
 
     public override void Prepare()
     {
         base.Prepare();
+        CreateCore();
         Model.CurrentState = SessionModel.SessionState.Waiting;
     }
 
@@ -50,10 +48,13 @@ public abstract class SessionManagerBase : Entity<SessionModel>
 
     public override void Refresh()
     {
+        Model.CurrentState = SessionModel.SessionState.Running;
         CoreManager.SetModel(new GameCoreModel
         {
             SessionManager = this,
-            Player = Model.Player
+            Player = Model.Player,
+            GameContentHolder = Model.GameContentHolder,
+            ManagersContentHolder = Model.ManagersContentHolder
         });
         StartSession(); 
     }
@@ -63,7 +64,7 @@ public abstract class SessionManagerBase : Entity<SessionModel>
 
 public class SessionModel
 {
-    public enum SessionState { Waiting, Running, Paused, Win, Lose }
+    public enum SessionState { Waiting, Running, Paused, Win, GameOver }
 
     private SessionState _state = SessionState.Waiting;
     public SessionState CurrentState
@@ -79,4 +80,8 @@ public class SessionModel
     public PlayerController Player { get; set; }
 
     public event Action<SessionState> OnStateChanged;
+
+    public Transform GameContentHolder;
+
+    public Transform ManagersContentHolder;
 }

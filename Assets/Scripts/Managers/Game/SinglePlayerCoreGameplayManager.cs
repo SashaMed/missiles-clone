@@ -15,9 +15,11 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
 
 
     private float _elapsed;
-    private readonly List<IThreat> _active = new();
+    private List<IThreat> _active = new();
     private UniTaskVoid coreCycle;
     private int _currentIteration;
+
+    private CancellationTokenSource _cts;
 
     protected override void StartCoreLoop()
     {
@@ -27,25 +29,40 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
             return;
         }
 
-        coreCycle = StartCoreLoopAsync();
+        _cts?.Cancel(); 
+        _cts = new CancellationTokenSource();
+        coreCycle = StartCoreLoopAsync(_cts.Token);
     }
 
     public override void OnPLayerDeath(PlayerController player)
     {
+        _cts?.Cancel();
         Model.SessionManager.EndSession();
     }
 
     public override void Refresh()
     {
+        DisableOldThreats();
         base.Refresh();
         _currentIteration = 0;
     }
 
-    private async UniTaskVoid StartCoreLoopAsync()
+    private void DisableOldThreats()
     {
-        while (true)
+        foreach (var threat in _active.ToList())
         {
-            int budget = Mathf.RoundToInt(config.budgetCurve.Evaluate(_elapsed));
+            if (threat == null) continue;
+
+            threat.EarlyThreatDisable(this);
+        }
+        _active = new List<IThreat>();
+    }
+
+    private async UniTaskVoid StartCoreLoopAsync(CancellationToken token)
+    {
+        while (Model.SessionManager.IsActive)
+        {
+            int budget = Mathf.RoundToInt(config.budgetCurve.Evaluate(_currentIteration));
 
             var thisBatch = new List<IThreat>();
 
@@ -54,22 +71,23 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
                 var threatConfig = PickThreat(budget);
                 if (threatConfig == null) break;
 
-                var threatPrefab = Instantiate(threatConfig.threatPrefab, ContentHolder);
-                var threat = threatConfig.threatPrefab.GetComponent<IThreat>();
+                var threatPrefab = Instantiate(threatConfig.threatPrefab, Model.GameContentHolder);
+                var threat = threatPrefab.GetComponent<IThreat>();
                 threat.StartThreat(this);
                 budget -= threatConfig.cost;
                 _active.Add(threat);
                 thisBatch.Add(threat);
-                threat.OnEnded += t => _active.Remove(t);
+                threat.OnThreatEnded += t => _active.Remove(t);
+                Debug.Log($"Spawned threat[{_currentIteration}]: {threatConfig.threatPrefab.name}, Remaining budget: {_currentIteration}");
             }
 
 
-            var tracker = new ThreatBatchTracker(thisBatch, 0.5f);
+            var tracker = new ThreatBatchTracker(thisBatch, token, 0.5f);
             await tracker.WaitTask;
 
-
-            await UniTask.Delay(TimeSpan.FromSeconds(config.iterationDelay));
-            _elapsed += config.iterationDelay;
+            var iterationDelay = UnityEngine.Random.Range(config.minIterationDelay, config.maxIterationDelay);
+            await UniTask.Delay(TimeSpan.FromSeconds(iterationDelay), cancellationToken: token);
+            //_elapsed += iterationDelay;
             _currentIteration++;
         }
     }
@@ -117,28 +135,3 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
 
 
 
-public class ThreatBatchTracker
-{
-    private readonly int _initialCount;
-    private readonly int _finishCount;               
-    private readonly TaskCompletionSource<bool> _tcs = new();
-    public Task WaitTask => _tcs.Task;
-
-    public ThreatBatchTracker(IEnumerable<IThreat> threats, float remainingFraction = 0.5f)
-    {
-        var list = threats.ToList();
-        _initialCount = list.Count;
-        _finishCount = Mathf.CeilToInt(_initialCount * remainingFraction);
-
-        foreach (var t in list)
-            t.OnEnded += OnThreatEnded;
-    }
-
-    private int _alive;
-    private void OnThreatEnded(IThreat t)
-    {
-        t.OnEnded -= OnThreatEnded;
-        if (Interlocked.Decrement(ref _alive) <= _finishCount)
-            _tcs.TrySetResult(true);
-    }
-}

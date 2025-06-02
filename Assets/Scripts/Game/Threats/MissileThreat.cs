@@ -8,7 +8,7 @@ public class MissileThreat : MonoBehaviour, IThreat
     [SerializeField] private MissileController missilePrefab;
     [SerializeField] private float distanceToPlayer = 10f;
 
-    public event Action<IThreat> OnEnded;
+    public event Action<IThreat> OnThreatEnded;
 
     private MissileController missileController;
 
@@ -35,7 +35,7 @@ public class MissileThreat : MonoBehaviour, IThreat
     public void MissileStopMoving()
     {
         missileController.OnTimeToLiveReachZeroAction += MissileStopMoving;
-        OnEnded?.Invoke(this);
+        OnThreatEnded?.Invoke(this);
     }
 
     private void OnDestroy()
@@ -46,4 +46,8 @@ public class MissileThreat : MonoBehaviour, IThreat
         }
     }
 
+    public void EarlyThreatDisable(CoreGameplayManagerBase coreManager)
+    {
+        throw new NotImplementedException();
+    }
 }

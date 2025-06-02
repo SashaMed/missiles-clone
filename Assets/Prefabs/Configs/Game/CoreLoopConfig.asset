@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546b0cdaa5b0cf740ab8dffbc9bbd6fd, type: 3}
+  m_Name: CoreLoopConfig
+  m_EditorClassIdentifier: 
+  budgetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.011142731
+      value: 1.0517883
+      inSlope: 1.5679506
+      outSlope: 1.5679506
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2.538337
+      value: 5.014304
+      inSlope: 0.36264628
+      outSlope: 0.36264628
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.24439366
+    - serializedVersion: 3
+      time: 9.030741
+      value: 6.919367
+      inSlope: 0.29342946
+      outSlope: 0.29342946
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  minIterationDelay: 2
+  maxIterationDelay: 4
+  maxActive: 4
+  threats:
+  - threatPrefab: {fileID: 6118355062282490779, guid: 6bb861a904c8a974ca0567731f2b5a36, type: 3}
+    cost: 2
+    startIteration: 0
+    blocksNextCycle: 0
+  - threatPrefab: {fileID: 4628344439553005919, guid: bebf16b5d0a936642a7e4058c711060f, type: 3}
+    cost: 1
+    startIteration: 0
+    blocksNextCycle: 0
+  - threatPrefab: {fileID: 888313903508629049, guid: 99ea5a49ce6635a42a5240997c9da96e, type: 3}
+    cost: 3
+    startIteration: 0
+    blocksNextCycle: 0
