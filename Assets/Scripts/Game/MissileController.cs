@@ -2,16 +2,12 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class MissileController : MonoBehaviour, IThreat
+public class MissileController : Projectile, IThreat
 {
     [SerializeField] Transform target;
    
     [Space]
-    [SerializeField] float forwardSpeed = 70f;
-    [SerializeField] float turnSpeed = 150;
-
     [Header("Missile Settings")]
-    [SerializeField] float lifetime = 5f;
 
     [Space]
     [SerializeField] float spawnDistanceToPlayer = 200;
@@ -25,13 +21,6 @@ public class MissileController : MonoBehaviour, IThreat
     [Space]
     [SerializeField] float afterHitTrailWorkingTime = 0.1f;
 
-    public Action OnTimeToLiveReachZeroAction;
-
-    private float lifeTimer;
-
-    private Core core;
-
-    private bool isActive = true;
     private float originalEmissionRateOverTime;
 
     public event Action<IThreat> OnThreatEnded;
@@ -64,48 +53,22 @@ public class MissileController : MonoBehaviour, IThreat
         target = newTarget;
     }
 
-    public void OnTriggerEnter(Collider other)
-    {
-        if (!isActive)
-        {
-            return;
-        }
-        var damageable = other.GetComponent<IDamageable>();
-        if (damageable == null)
-        {
-            return;
-        }
-        if (damageable.Damage(100, transform.name))
-        {
-            Debug.Log($"Missile {transform.name} hit {other.transform.parent.parent.name} and dealt damage.");
-            OnMissileHits();
-        }
-    }
 
-    private void Awake()
+    protected override void Awake()
     {
-        core = GetComponentInChildren<Core>();
+        base.Awake();
         trailParticles = GetComponentInChildren<ParticleSystem>();
     }
 
-    private void Start()
+    protected override void Start()
     {
-        isActive = true;
-        lifeTimer = 0f;
+        base.Start();
         core.Stats.onHealthZero += OnMissileDeath;
-        core.Movement.Init(transform, forwardSpeed, turnSpeed);
     }
 
-    private void Update()
+    protected override void Update()
     {
-        core.LogicUpdate();
-        if (!isActive)
-        {
-            return;
-        }
-
-        SetMovementInput();
-        CheckLifetime();
+        base.Update();
     }
 
     private void OnDisable()
@@ -113,14 +76,7 @@ public class MissileController : MonoBehaviour, IThreat
         core.Stats.onHealthZero -= OnMissileDeath;
     }
 
-    private void CheckLifetime()
-    {
-        lifeTimer += Time.deltaTime;
-        if (lifeTimer >= lifetime)
-            OnTimeToLiveReachZero();
-    }
-
-    private void SetMovementInput()
+    protected override void Move()
     {
         if (target == null)
         {
@@ -138,6 +94,12 @@ public class MissileController : MonoBehaviour, IThreat
     {
         Debug.Log($"Missile {transform.name} was hit.");
         OnMissileHits();
+    }
+
+    protected override void OnHit()
+    {
+        OnMissileHits();
+        base.OnHit();
     }
 
     private void OnMissileHits()
@@ -190,10 +152,11 @@ public class MissileController : MonoBehaviour, IThreat
         }
     }
 
-    private void OnTimeToLiveReachZero()
+    protected override void OnTimeToLiveReachZero()
     {
         DropMissile();
         DisableMissile();
+        base.OnTimeToLiveReachZero();
     }
 
 
