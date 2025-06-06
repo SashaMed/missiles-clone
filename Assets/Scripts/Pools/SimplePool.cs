@@ -5,12 +5,21 @@ using UnityEngine;
 
 public class SimplePool : MonoBehaviour
 {
+    [Header("Id")]
+    [SerializeField] private GlobalPoolType globalPoolType = GlobalPoolType.None;
+    [SerializeField] private string poolId;
+
+    [Space]
     [SerializeField] protected GameObject prefab;
-    [SerializeField] protected int countOfrefabs = 10;
-    [SerializeField] private PoolType poolType;
+    [SerializeField] protected int countOfPrefabs = 5;
 
+    [SerializeField] private Transform spawnTransform;
 
-    public PoolType PoolType => poolType;
+    private Transform SpawnTransform => spawnTransform != null ? spawnTransform : transform;
+
+    public GlobalPoolType PoolType => globalPoolType;
+
+    public string PoolId => globalPoolType != GlobalPoolType.None ? globalPoolType.ToString() : poolId;
 
     protected List<GameObject> poolItems = new List<GameObject>();
     protected Dictionary<GameObject, IPoolableGO> ipoolables = new Dictionary<GameObject, IPoolableGO>();
@@ -19,6 +28,15 @@ public class SimplePool : MonoBehaviour
 
     protected virtual void Awake()
     {
+        GrowPool();
+    }
+
+    public void InitPool(GameObject prefab, Transform spawnTransform, int countOfPrefabs = 5)
+    {
+        this.prefab = prefab;
+        this.countOfPrefabs = countOfPrefabs;
+        this.spawnTransform = spawnTransform;
+
         GrowPool();
     }
 
@@ -37,10 +55,10 @@ public class SimplePool : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < countOfrefabs; i++)
+        for (int i = 0; i < countOfPrefabs; i++)
         {
             var instanceToAdd = Instantiate(prefab);
-            instanceToAdd.transform.SetParent(transform);
+            instanceToAdd.transform.SetParent(SpawnTransform);
 
             var ipoolable = instanceToAdd.GetComponent<IPoolableGO>();
             if (ipoolable != null)

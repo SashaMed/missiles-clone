@@ -425,7 +425,7 @@ GameObject:
   - component: {fileID: 4046969967749823683}
   - component: {fileID: 8820968593448084855}
   m_Layer: 0
-  m_Name: Combat
+  m_Name: MissileCombat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -530,10 +530,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a047e920fec017b4795513779154fa43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   forwardSpeed: 90
   turnSpeed: 130
   lifetime: 20
+  ignoreAttackTime: 0.5
+  target: {fileID: 0}
   spawnDistanceToPlayer: 200
   trailParticles: {fileID: 9019922398028505958}
   missileModel: {fileID: 5725824932009517926}

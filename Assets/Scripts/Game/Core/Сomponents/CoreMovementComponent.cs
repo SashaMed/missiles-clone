@@ -17,9 +17,9 @@ public class CoreMovementComponent : CoreComponent
     private float ForwardSpeed => (_forwardSpeed>0) ? _forwardSpeed : forwardSpeed;
     private float TurnSpeed => (_turnSpeed > 0) ? _turnSpeed : turnSpeed;
 
-    public void Init(Transform newMovable, float forwardSpeed, float turnSpeed)
+    public void Init(Transform movable, float forwardSpeed, float turnSpeed)
     {
-        SetMovable(newMovable);
+        SetMovable(movable);
         _forwardSpeed = forwardSpeed;
         _turnSpeed = turnSpeed;
     }

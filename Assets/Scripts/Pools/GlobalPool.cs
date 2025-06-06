@@ -20,19 +20,30 @@ public class GlobalPool : MonoBehaviourSingleton<GlobalPool>
         pools.Add(smallExposionPool);    
     }
 
-    public GameObject Get(PoolType poolType, Vector3 position)
+    public GameObject Get(string poolType, Vector3 position)
     {
-        return pools.FirstOrDefault(p => p.PoolType == poolType)?.Get(position);
+        return pools.FirstOrDefault(p => p.PoolId == poolType)?.Get(position);
     }
 
-    public GameObject Get(PoolType poolType, Action<GameObject> initializer)
+    public GameObject Get(string poolType, Action<GameObject> initializer)
     {
-        return pools.FirstOrDefault(p => p.PoolType == poolType)?.Get(initializer);
+        return pools.FirstOrDefault(p => p.PoolId == poolType)?.Get(initializer);
+    }
+
+
+    public GameObject Get(GlobalPoolType poolType, Vector3 position)
+    {
+        return Get(poolType.ToString(), position);
+    }
+
+    public GameObject Get(GlobalPoolType poolType, Action<GameObject> initializer)
+    {
+        return Get(poolType.ToString(), initializer);
     }
 }
 
 
-public enum PoolType
+public enum GlobalPoolType
 {
     None,
     BigExplosionVFX,

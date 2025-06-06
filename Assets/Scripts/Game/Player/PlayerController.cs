@@ -39,11 +39,12 @@ public class PlayerController : Entity<PlayerModel>
     {
         core.Movement.SetMovementInput(playerInputHandler.RawMovementInput);
         core.Movement.SetTurnInput(playerInputHandler.TurnInput);
+        core.Attack.SetAttackInput(playerInputHandler.FireInput);
     }
 
     private void InitCoreComponents()
     {
-        core.Movement.Init(transform, forwardSpeed, turnSpeed);
+        core.Movement.Init(movable: transform, forwardSpeed, turnSpeed);
         core.Stats.onHealthZero += OnDeath;
     }
 
@@ -57,6 +58,10 @@ public class PlayerController : Entity<PlayerModel>
     {
         gameObject.SetActive(true);
         core.Stats.InitStats();
+        if (Model != null)
+        {
+            core.Attack.Init(bulletsHolder: Model.coreManager.Model.GameContentHolder);
+        }
     }
 }
 

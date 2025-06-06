@@ -7,6 +7,7 @@ public class Core : MonoBehaviour
     public CoreMovementComponent Movement { get; private set; }
     public CoreCombatComponent Combat { get; private set; }
     public StatsComponent Stats { get; private set; }
+    public AttackComponent Attack { get; private set; }
 
     //public CollisionSenses CollisionSenses { get; private set; }
     //public ParticleManager ParticleManager { get; private set; }
@@ -21,6 +22,7 @@ public class Core : MonoBehaviour
         Combat = GetComponentInChildren<CoreCombatComponent>();
         Movement = GetComponentInChildren<CoreMovementComponent>();
         Stats = GetComponentInChildren<StatsComponent>();
+        Attack = GetComponentInChildren<AttackComponent>();
         //CollisionSenses = GetComponentInChildren<CollisionSenses>();
         //ParticleManager = GetComponentInChildren<ParticleManager>();
         //SoundComponent = GetComponentInChildren<Sound>();

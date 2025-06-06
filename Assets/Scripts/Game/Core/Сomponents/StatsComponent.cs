@@ -26,7 +26,7 @@ public class StatsComponent : CoreComponent
     [SerializeField] private float healthRestoreAmount = 1f;
 
     [Space]
-    [SerializeField] private PoolType deathVFXType = PoolType.None;
+    [SerializeField] private GlobalPoolType deathVFXType = GlobalPoolType.None;
 
 
     private float currentHealth;

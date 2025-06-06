@@ -1,17 +1,21 @@
 using System;
 using UnityEngine;
 
-public abstract class Projectile : MonoBehaviour
+public abstract class Projectile : MonoBehaviour, IPoolableGO
 {
     [SerializeField] protected float forwardSpeed = 70f;
     [SerializeField] protected float turnSpeed = 150f;
     [SerializeField] protected float lifetime = 5f;
+    [SerializeField] protected float ignoreAttackTime = 0.5f;
 
     public Action OnTimeToLiveReachZeroAction;
 
     protected Core core;
     protected bool isActive = true;
+    protected float lifeStartTime;
     private float lifeTimer;
+
+    public SimplePool ParentPool { get; set; }
 
     protected virtual void Awake()
     {
@@ -22,6 +26,7 @@ public abstract class Projectile : MonoBehaviour
     {
         isActive = true;
         lifeTimer = 0f;
+        lifeStartTime = Time.time;
         if (core != null)
         {
             core.Movement.Init(transform, forwardSpeed, turnSpeed);
@@ -48,7 +53,12 @@ public abstract class Projectile : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Projectile {gameObject.name} OnTriggerEnter: {other.name}");
         if (!isActive)
+        {
+            return;
+        }
+        if (!CanAttack())
         {
             return;
         }
@@ -61,6 +71,11 @@ public abstract class Projectile : MonoBehaviour
         {
             OnHit();
         }
+    }
+
+    protected bool CanAttack()
+    {
+        return Time.time > lifeStartTime + ignoreAttackTime;
     }
 
     protected virtual void OnHit()
@@ -81,5 +96,19 @@ public abstract class Projectile : MonoBehaviour
         {
             OnTimeToLiveReachZero();
         }
+    }
+
+    public virtual void ResetPoolable()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void ReturnToPool()
+    {
+        if (ParentPool == null)
+        {
+            return;
+        }
+        ParentPool.AddToPool(gameObject);
     }
 }
