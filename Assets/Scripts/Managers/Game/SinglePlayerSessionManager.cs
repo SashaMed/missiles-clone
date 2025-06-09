@@ -18,7 +18,15 @@ public class SinglePlayerSessionManager : SessionManagerBase
 
     public override void EndSessionToMenu()
     {
-        throw new System.NotImplementedException();
+        var basicLayer = BasicLayer.Instance;
+        basicLayer.BackToMainMenuScreen();
+        CoreManager.KillCoreLoop();
+        KillSession();
+    }
+
+    public override void KillSession()
+    {
+        Destroy(gameObject);
     }
 
     public override void RestartSession()

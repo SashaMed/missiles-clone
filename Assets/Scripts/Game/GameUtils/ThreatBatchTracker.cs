@@ -27,7 +27,7 @@ public class ThreatBatchTracker
         {
             _token.Register(() =>
             {
-                Debug.Log("ThreatBatchTracker: Cancelled by token.");
+                //Debug.Log("ThreatBatchTracker: Cancelled by token.");
                 _tcs.TrySetCanceled(_token);
             });
         }

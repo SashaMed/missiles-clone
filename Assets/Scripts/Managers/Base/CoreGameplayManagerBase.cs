@@ -9,6 +9,8 @@ public abstract class CoreGameplayManagerBase : Entity<GameCoreModel>
     public Transform ContentHolder => _contentHolder;
     protected abstract void StartCoreLoop();
 
+    public abstract void KillCoreLoop();
+
     public abstract void OnPLayerDeath(PlayerController player);
 
     public override void Refresh()

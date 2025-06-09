@@ -6,7 +6,7 @@ public class GameOverScreen : BasicScreen<GameOverScreenModel>
 
     public void OnMenuClick()
     {
-        Close();
+        //Close();
         Model.SessionManager.EndSessionToMenu();
     }
 

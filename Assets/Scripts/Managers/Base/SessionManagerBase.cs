@@ -31,6 +31,7 @@ public abstract class SessionManagerBase : Entity<SessionModel>
     public abstract void EndSession();
 
     public abstract void StartSession();
+    public abstract void KillSession();
 
     public virtual void PauseSession()
     {

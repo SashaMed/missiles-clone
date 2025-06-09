@@ -16,9 +16,11 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
 
     private float _elapsed;
     private List<IThreat> _active = new();
-    private UniTaskVoid coreCycle;
+    private UniTaskVoid _coreCycle;
     private int _currentIteration;
 
+
+    private Dictionary<GameObject, SimplePool> _poolsByPrefab = new Dictionary<GameObject, SimplePool>();
     private CancellationTokenSource _cts;
 
     protected override void StartCoreLoop()
@@ -31,7 +33,19 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
 
         _cts?.Cancel(); 
         _cts = new CancellationTokenSource();
-        coreCycle = StartCoreLoopAsync(_cts.Token);
+        _coreCycle = StartCoreLoopAsync(_cts.Token);
+    }
+
+    public override void KillCoreLoop()
+    {
+        _cts?.Cancel();
+        var holder = Model.GameContentHolder;
+
+        foreach (Transform child in holder)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        Destroy(gameObject);
     }
 
     public override void OnPLayerDeath(PlayerController player)
@@ -71,8 +85,8 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
                 var threatConfig = PickThreat(budget);
                 if (threatConfig == null) break;
 
-                var threatPrefab = Instantiate(threatConfig.threatPrefab, Model.GameContentHolder);
-                var threat = threatPrefab.GetComponent<IThreat>();
+                var threatGO = GetTreat(threatConfig.threatPrefab);
+                var threat = threatGO.GetComponent<IThreat>();
                 threat.StartThreat(this);
                 budget -= threatConfig.cost;
                 _active.Add(threat);
@@ -131,6 +145,25 @@ public class SinglePlayerCoreGameplayManager : CoreGameplayManagerBase
 
         return candidates[candidates.Count - 1];
     }
+
+
+    private GameObject GetTreat(GameObject prefab)
+    {
+        if (_poolsByPrefab.TryGetValue(prefab, out var pool))
+        {
+            Debug.Log($"Pool for prefab: {prefab.name} already exist");
+            return pool.Get((poolable) => { });
+        }
+        else
+        {
+            Debug.Log($"Creating new pool for prefab: {prefab.name}");
+            var newPool = GlobalPool.Instance.CreatePoolInstance(prefab.name);
+            newPool.InitPool(prefab, Model.GameContentHolder, 2);
+            _poolsByPrefab[prefab] = newPool;
+            return newPool.Get((poolable) => { });
+        }
+    }
+
 }
 
 

@@ -21,63 +21,55 @@ public class BasicLayer : CoreBasicLayer
     [SerializeField] private CanvasGroup _fader;
 
 
-    public void BackToStartScreen()
+    public void BackToMainMenuScreen()
     {
-        //var nav = SimpleNavigation.Instance;
+        var nav = SimpleNavigation.Instance;
 
-        //if (nav.navigationStack
-        //    .Any(s => s.GetType() == typeof(GameScreen)))
-        //{
-        //    if (nav.lastScreen is IBasicScr currScreen)
-        //    {
-        //        currScreen.Lock = true;
-        //    }
+        if (nav.navigationStack
+            .Any(s => s.GetType() == typeof(GameScreen)))
+        {
+            if (nav.lastScreen is IBasicScr currScreen)
+            {
+                currScreen.Lock = true;
+            }
 
-        //    FadeWithAction(async () =>
-        //    {
+            FadeWithAction(async () =>
+            {
 
-        //        if (GameSaves.Data.Progress.GroupedLevel < GameManager.Instance.LevelProvider.startScreenEnableLevel)
-        //        {
-        //            GoToGameScreen(StartScreen.GetNextGameLevelData());
-        //        }
-        //        else
-        //        {
-        //            await SimpleNavigation.Instance.PopScreensTo<StartScreen>(false);
+                //if (GameSaves.Data.Progress.GroupedLevel < GameManager.Instance.LevelProvider.startScreenEnableLevel)
+                //{
+                //    GoToGameScreen(StartScreen.GetNextGameLevelData());
+                //}
+                //else
+                {
+                    await SimpleNavigation.Instance.PopScreensTo<MainMenuScreen>(false);
 
-        //            if (nav.navigationStack.Count == 0)
-        //            {
-        //                SimpleNavigation.Instance.Push<StartScreen, EmptyModel>();
-        //            }
-        //        }
+                    if (nav.navigationStack.Count == 0)
+                    {
+                        SimpleNavigation.Instance.Push<MainMenuScreen, EmptyModel>();
+                    }
+                }
 
 
-        //    });
-        //}
-        //else
-        //{
-        //    SimpleNavigation.Instance.PopScreensTo<StartScreen>();
-        //}
+            });
+        }
+        else
+        {
+            _ = SimpleNavigation.Instance.PopScreensTo<MainMenuScreen>();
+        }
     }
 
-    public void GoToGameScreen(/*StartLevelData gameCfg, bool noFade = false*/)
-    {
-        //var nav = SimpleNavigation.Instance;
+    //public void GoToMainMenuScreen()
+    //{
+    //    var nav = SimpleNavigation.Instance;
 
-        //if (nav.navigationStack
-        //    .Any(s => s.GetType() == typeof(GameScreen)))
-        //{
-        //    SimpleNavigation.Instance.PopScreensTo<GameScreen>();
-        //    (SimpleNavigation.Instance.navigationStack.Last() as GameScreen)?.SetModel(gameCfg);
-        //}
-        //else
-        //{
-        //    Instance.FadeWithAction(
-        //        () =>
-        //        {
-        //            SimpleNavigation.Instance.Push<GameScreen, StartLevelData>(gameCfg);
-        //        }, noFade ? false : true);
-        //}
-    }
+    //    if (nav.navigationStack
+    //        .Any(s => s.GetType() == typeof(GameScreen)))
+    //    {
+    //        _ = nav.PopScreensTo<GameScreen>();
+    //    }
+
+    //}
 
     public void FadeWithAction(Action doThis, float duration = -1, bool waitScreenLoaded = false)
     {

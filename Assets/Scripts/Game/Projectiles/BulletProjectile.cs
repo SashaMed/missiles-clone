@@ -9,6 +9,7 @@ public class BulletProjectile : Projectile
 
     protected override void OnTimeToLiveReachZero()
     {
+        Debug.Log($"BulletProjectile {gameObject.name} OnTimeToLiveReachZero {id}");
         base.OnTimeToLiveReachZero();
         gameObject.SetActive(false);
         ReturnToPool();

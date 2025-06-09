@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class GlobalPool : MonoBehaviourSingleton<GlobalPool>
 {
+    [SerializeField] private SimplePool simplePoolPrefab;
+
+    [Space]
     [SerializeField] private SimplePool bigExposionPool;
     [SerializeField] private SimplePool smallExposionPool;
 
@@ -39,6 +42,13 @@ public class GlobalPool : MonoBehaviourSingleton<GlobalPool>
     public GameObject Get(GlobalPoolType poolType, Action<GameObject> initializer)
     {
         return Get(poolType.ToString(), initializer);
+    }
+
+    public SimplePool CreatePoolInstance(string poolName)
+    {
+        var pool = Instantiate(simplePoolPrefab, transform);
+        pool.name = poolName;
+        return pool;
     }
 }
 

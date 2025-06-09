@@ -85,6 +85,7 @@ public class SimplePool : MonoBehaviour
 
     public virtual void AddToPool(GameObject obj)
     {
+        Debug.Log("AddToPool: " + obj.name, obj);
         obj.SetActive(false);
 
         if (!isActive)

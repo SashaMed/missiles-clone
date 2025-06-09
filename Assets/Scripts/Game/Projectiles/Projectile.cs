@@ -16,17 +16,23 @@ public abstract class Projectile : MonoBehaviour, IPoolableGO
     private float lifeTimer;
 
     public SimplePool ParentPool { get; set; }
+    protected int id;
 
     protected virtual void Awake()
     {
         core = GetComponentInChildren<Core>();
+        id = gameObject.GetInstanceID();
     }
 
-    protected virtual void Start()
+    protected virtual void OnEnable()
     {
         isActive = true;
         lifeTimer = 0f;
         lifeStartTime = Time.time;
+    }
+
+    protected virtual void Start()
+    {
         if (core != null)
         {
             core.Movement.Init(transform, forwardSpeed, turnSpeed);
@@ -53,7 +59,7 @@ public abstract class Projectile : MonoBehaviour, IPoolableGO
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Projectile {gameObject.name} OnTriggerEnter: {other.name}");
+        //Debug.Log($"Projectile {gameObject.name} OnTriggerEnter: {other.name}");
         if (!isActive)
         {
             return;
@@ -105,6 +111,7 @@ public abstract class Projectile : MonoBehaviour, IPoolableGO
 
     public void ReturnToPool()
     {
+        Debug.Log($"BulletProjectile {gameObject.name} OnTimeToLiveReachZero {id}");
         if (ParentPool == null)
         {
             return;
