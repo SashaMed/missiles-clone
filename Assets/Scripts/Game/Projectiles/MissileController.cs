@@ -58,6 +58,11 @@ public class MissileController : Projectile, IThreat
     {
         base.Awake();
         trailParticles = GetComponentInChildren<ParticleSystem>();
+        if (trailParticles != null)
+        {
+            var emission = trailParticles.emission;
+            originalEmissionRateOverTime = emission.rateOverTime.constant;
+        }
     }
 
     protected override void Start()
@@ -66,15 +71,11 @@ public class MissileController : Projectile, IThreat
         core.Stats.onHealthZero += OnMissileDeath;
     }
 
-    protected override void Update()
-    {
-        base.Update();
-    }
 
-    private void OnDisable()
-    {
-        core.Stats.onHealthZero -= OnMissileDeath;
-    }
+    //private void OnDisable()
+    //{
+    //    core.Stats.onHealthZero -= OnMissileDeath;
+    //}
 
     protected override void Move()
     {
@@ -138,13 +139,14 @@ public class MissileController : Projectile, IThreat
         var trailLifetime = trailParticles.main.startLifetime.constant;
 
         yield return new WaitForSeconds(trailLifetime);
-        ResetMissile();
+        ReturnToPool();
     }
 
-    private void ResetMissile()
+    public override void ResetPoolable()
     {
-        gameObject.SetActive(false);
-
+        base.ResetPoolable();
+        core.gameObject.SetActive(true);
+        missileModel.SetActive(true);
         if (trailParticles != null)
         {
             var emission = trailParticles.emission;

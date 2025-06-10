@@ -16,7 +16,10 @@ public class AttackComponent : CoreComponent
 
     public void Init(Transform bulletsHolder)
     {
-        bulletsPool.InitPool(config.projectilePrefab, bulletsHolder, config.burstCount);
+        if (!bulletsPool.IsActive)
+        {
+            bulletsPool.InitPool(config.projectilePrefab, bulletsHolder, config.burstCount);
+        }
     }
 
 
@@ -66,8 +69,10 @@ public class AttackComponent : CoreComponent
         {
             if (point == null) continue;
             var go = bulletsPool.Get((bullet) => {
+                bullet.SetActive(false);
                 bullet.transform.position = point.position;
                 bullet.transform.rotation = point.rotation;
+                bullet.SetActive(true);
             });
         }
     }

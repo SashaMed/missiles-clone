@@ -26,6 +26,8 @@ public class SimplePool : MonoBehaviour
 
     private bool isActive;
 
+    public bool IsActive => isActive;
+
     protected virtual void Awake()
     {
         GrowPool();
@@ -47,6 +49,7 @@ public class SimplePool : MonoBehaviour
             Debug.LogWarning($"At {gameObject.name} prefab is null");
             return;
         }
+        Debug.Log($"Growing pool {gameObject.name} with prefab {prefab?.name}, count: {countOfPrefabs}", gameObject);
 
         var interfaceComponent = prefab.GetComponent<IPoolableGO>();
         if (interfaceComponent == null)
@@ -85,13 +88,7 @@ public class SimplePool : MonoBehaviour
 
     public virtual void AddToPool(GameObject obj)
     {
-        Debug.Log("AddToPool: " + obj.name, obj);
         obj.SetActive(false);
-
-        if (!isActive)
-        {
-            return;
-        }
 
         if (ipoolables.TryGetValue(obj, out var ipoolable))
         {

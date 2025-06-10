@@ -111,11 +111,12 @@ public abstract class Projectile : MonoBehaviour, IPoolableGO
 
     public void ReturnToPool()
     {
-        Debug.Log($"BulletProjectile {gameObject.name} OnTimeToLiveReachZero {id}");
         if (ParentPool == null)
         {
+            Debug.Log($"[ReturnToPool] Projectile {gameObject.name} ParentPool is null {id}");
             return;
         }
+        Debug.Log($"[ReturnToPool] Projectile {gameObject.name} ReturnToPool {id}");
         ParentPool.AddToPool(gameObject);
     }
 }
