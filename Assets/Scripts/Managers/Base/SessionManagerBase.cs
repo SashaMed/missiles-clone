@@ -49,14 +49,7 @@ public abstract class SessionManagerBase : Entity<SessionModel>
 
     public override void Refresh()
     {
-        Model.CurrentState = SessionModel.SessionState.Running;
-        CoreManager.SetModel(new GameCoreModel
-        {
-            SessionManager = this,
-            Player = Model.Player,
-            GameContentHolder = Model.GameContentHolder,
-            ManagersContentHolder = Model.ManagersContentHolder
-        });
+
         StartSession(); 
     }
 

@@ -47,5 +47,18 @@ public class SinglePlayerSessionManager : SessionManagerBase
 
     }
 
+    public override void Refresh()
+    {
+        base.Refresh();
+        Model.CurrentState = SessionModel.SessionState.Running;
+        CoreManager.SetModel(new GameCoreModel
+        {
+            SessionManager = this,
+            Player = Model.Player,
+            GameContentHolder = Model.GameContentHolder,
+            ManagersContentHolder = Model.ManagersContentHolder
+        });
+    }
+
 
 }
